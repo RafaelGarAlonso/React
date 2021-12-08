@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Container, Form, Row, Col, Button, Stack, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-
+import { VerticalModal } from '../VerticalModal/VerticalModal';
 
 export const RegisterPage = () => {
+
+    const [modalTitle, setModalTitle] = React.useState('');
+    const [modalText, setModalText] = React.useState('');
+    const [modalShow, setModalShow] = React.useState(false);
 
     const navigate = useNavigate();
 
@@ -14,7 +18,6 @@ export const RegisterPage = () => {
         setForm( { ...form, [field]: value });
         if ( !!errors[field] ) setErrors({ ...errors, [field]: null });
     }
-    
 
     const onFormSubmit = e => {
         e.preventDefault()
@@ -22,30 +25,40 @@ export const RegisterPage = () => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors);
         } else {
-            userRegisterFetch(form.email, form.password).then( (resp) => {
+            userRegisterFetch(form.name, form.email, form.password).then( (resp) => {
                 console.log('resp', resp);
-                navigate('/login');
+                if (resp.ok) {
+                    printModal({title: 'Usuario creado', text: 'Usuario creado con éxito'});
+                } else {
+                    printModal({title: 'Error inesperado', text: resp.msg});
+                }
             });
         }
     }
 
     const findFormErrors = () => {
-        const { email, password, confirmPassword } = form;
-        console.log('confirmPassword', confirmPassword)
+        const { name, email, password, confirmPassword } = form;
         const newErrors = {}
+        if ( !name || name === '' ) newErrors.name = 'Introduzca un nombre';
         if ( !email || email === '' ) newErrors.email = 'Introduzca un correo electrónico';
         if ( !password || password === '' ) newErrors.password = 'Introduzca una contraseña';
         if ( !confirmPassword || confirmPassword === '' ) newErrors.confirmPassword = 'Confirme una contraseña';
-        if ( confirmPassword !== password ) newErrors.confirmPassword = 'La contrseña no coincide';
+        if ( confirmPassword !== password ) newErrors.confirmPassword = 'Las contraseñas no coinciden';
         return newErrors;
     }
 
-    const userRegisterFetch = (email, password) => {
-        return fetch('http://localhost:3000/usuario', { method: 'POST', body: JSON.stringify({ email, password })}).then( response => {
+    const userRegisterFetch = (name, email, password) => {
+        return fetch('http://localhost:3000/api/usuarios', { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ nombre: name, email, password })
+        })
+        .then( response => {
             return response.json().then((data) => {
                 return data;
-            }).catch((err) => {
-                console.log(err);
             });
         });
     }
@@ -56,6 +69,12 @@ export const RegisterPage = () => {
         });
     }
 
+    const printModal = ({title, text}) => {
+        setModalTitle(title);
+        setModalText(text);
+        setModalShow(true);
+    }
+
     return (
         <Container fluid style={ { backgroundColor: '#e9e8e4' } }>
             <Form onSubmit={ onFormSubmit }>
@@ -63,6 +82,20 @@ export const RegisterPage = () => {
 
                     <Row className="mb-2">
                         <Image className="mx-auto" style={{ maxWidth: '16rem' }} src="assets/logo-register.png" fluid />
+                    </Row>
+
+                    <Row className="mb-2">
+                        <Form.Group as={Col} controlId="formGridName">
+                            <Form.Label>Nombre</Form.Label>
+                            <Form.Control onChange={ e => setField('name', e.target.value) } 
+                                          type="text" 
+                                          placeholder="Nombre" 
+                                          isInvalid={ !!errors.name } />
+
+                            <Form.Control.Feedback type='invalid'>
+                                { errors.name }
+                            </Form.Control.Feedback>
+                        </Form.Group>
                     </Row>
 
                     <Row className="mb-2">
@@ -107,12 +140,8 @@ export const RegisterPage = () => {
                         </Form.Group>
                     </Row>
 
-                    <Form.Group className="mb-3" id="formGridCheckbox">
-                        <Form.Check type="checkbox" label="Recordar usuario" />
-                    </Form.Group>
-
-                    <Button  className="mx-auto" style={{ minWidth: '10rem', minHeight: '3rem' }} variant="primary" type="submit">
-                        Acceder
+                    <Button  className="mx-auto mt-4" style={{ minWidth: '10rem', minHeight: '3rem' }} variant="primary" type="submit">
+                        Registrarse
                     </Button>
 
                     <Row className="mt-4 mx-left">
@@ -127,6 +156,14 @@ export const RegisterPage = () => {
 
                 </Stack>
             </Form>
+
+            <VerticalModal 
+                show = { modalShow } 
+                title = { modalTitle } 
+                text = { modalText }
+                onHide = { () => setModalShow(false) } 
+            />
+
         </Container>
     )
 }

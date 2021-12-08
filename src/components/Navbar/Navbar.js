@@ -5,7 +5,7 @@ import { types } from '../../types/types';
 
 export const Navbar = () => {
 
-    const { user, dispatch } = useContext(AuthContext);
+    const { dispatch } = useContext(AuthContext);
 
     const navigate = useNavigate();
 

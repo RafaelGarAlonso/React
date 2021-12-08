@@ -4,8 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../../auth/authContext';
 import { types } from '../../types/types';
+import { VerticalModal } from '../VerticalModal/VerticalModal';
 
 export const LoginPage = () => {
+
+    const [modalTitle, setModalTitle] = React.useState('');
+    const [modalText, setModalText] = React.useState('');
+    const [modalShow, setModalShow] = React.useState(false);
 
     const navigate = useNavigate();
     const { dispatch } = useContext(AuthContext);
@@ -17,7 +22,6 @@ export const LoginPage = () => {
         setForm( { ...form, [field]: value });
         if ( !!errors[field] ) setErrors({ ...errors, [field]: null });
     }
-    
 
     const onFormSubmit = e => {
         e.preventDefault()
@@ -25,19 +29,24 @@ export const LoginPage = () => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors);
         } else {
-            userLoginFetch(form.email, form.password).then(response => {
-                const action = {
-                    type: types.login,
-                    payload: { name: 'Fernando' }
+            userLoginFetch(form.email, form.password).then(resp => {
+                if (resp.ok) {
+
+                    const action = {
+                        type: types.login,
+                        payload: { name: 'Fernando' }
+                    }
+                    
+                    dispatch(action);
+        
+                    const lastPath = localStorage.getItem('lastPath') || '/dashboard';
+        
+                    navigate( lastPath, {
+                        replace: true
+                    });
+                } else {
+                    printModal({title: 'Error inesperado', text: resp.msg});
                 }
-                
-                dispatch(action);
-    
-                const lastPath = localStorage.getItem('lastPath') || '/dashboard';
-    
-                navigate( lastPath, {
-                    replace: true
-                });
             });
         }
     }
@@ -51,11 +60,16 @@ export const LoginPage = () => {
     }
 
     const userLoginFetch = (email, password) => {
-        return fetch('http://localhost:3000/login', { method: 'POST', body: JSON.stringify({ email, password })}).then( response => {
+        return fetch('http://localhost:3000/api/login', { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email, password })})
+        .then( response => {
             return response.json().then((data) => {
                 return data;
-            }).catch((err) => {
-                console.log(err);
             });
         });
     }
@@ -64,6 +78,12 @@ export const LoginPage = () => {
         navigate('/registro', {
             replace: true
         });
+    }
+
+    const printModal = ({title, text}) => {
+        setModalTitle(title);
+        setModalText(text);
+        setModalShow(true);
     }
 
     return (
@@ -123,6 +143,14 @@ export const LoginPage = () => {
     
                 </Stack>
             </Form>
+
+            <VerticalModal 
+                show = { modalShow } 
+                title = { modalTitle } 
+                text = { modalText }
+                onHide = { () => setModalShow(false) } 
+            />
+
         </Container>
     )
 }
