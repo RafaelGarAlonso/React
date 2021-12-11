@@ -1,17 +1,19 @@
 import { Route, Routes } from 'react-router-dom';
 import { Dashboard } from '../components/Dashboard/Dashboard';
 import { Navbar } from '../components/Navbar/Navbar';
+import { Sidebar } from '../components/Sidebar/Sidebar';
 import { Container } from 'react-bootstrap';
 
 export const DashboardRouter = () => {
     return (
-        <>
-            <Navbar />
-            <Container fluid style={ { backgroundColor: '#e9e8e4' } }>
+        <Container fluid style={ { backgroundColor: '#e9e8e4', display: 'flex', padding: '0' } }>
+            <Sidebar />
+            <div className="wrapper" style={ { padding: '10px', width: '100%' } }>
+                <Navbar />
                 <Routes>
                     <Route path="/dashboard" element={ <Dashboard /> } />
                 </Routes>
-            </Container>
-        </>
+            </div>
+        </Container>
     )
 }
