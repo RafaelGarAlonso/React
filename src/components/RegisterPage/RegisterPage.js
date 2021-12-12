@@ -3,6 +3,7 @@ import { Container, Form, Row, Col, Button, Stack } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
 import { userRegisterFetch } from '../../services/GlobalServices';
+import './RegisterPage.css';
 
 export const RegisterPage = () => {
 
@@ -27,8 +28,10 @@ export const RegisterPage = () => {
         } else {
             userRegisterFetch(form.name, form.email, form.password, role_selector).then( (resp) => {
                 if (resp.ok) {
-                    printModal({title: 'Usuario registrado', text: `El usuario ${resp.usuario.name} con email ${resp.usuario.email} se ha registrado con éxito. 
-                    Por favor diríjase a la sección de acceso para acceder al sistema.`});
+                    printModal(
+                        {   title: 'Usuario registrado', 
+                            text: `El usuario ${resp.usuario.name} con email ${resp.usuario.email} se ha registrado con éxito. \n \n Por favor diríjase a la sección de acceso para acceder al sistema.`
+                    });
                 } else {
                     printModal({title: 'Error inesperado', text: resp.msg});
                 }
@@ -63,12 +66,12 @@ export const RegisterPage = () => {
     }
 
     return (
-        <Container fluid style={ { backgroundColor: '#e9e8e4' } }>
+        <Container fluid className="register-container background-access-container">
             <Form onSubmit={ onFormSubmit }>
                 <Stack gap={2} className="col-md-5 col-xl-4 mx-auto my-auto login-form">
 
                     <Row className="mb-2">
-                        <h1 className="mx-left">Página de registro</h1>
+                        <h1 className="mx-left mt-4">Página de registro</h1>
                     </Row>
 
                     <Row className="mb-2">
@@ -149,12 +152,12 @@ export const RegisterPage = () => {
                         </Form.Group>
                     </Row>
 
-                    <Button  className="mx-auto" style={{ minWidth: '10rem', minHeight: '3rem' }} variant="primary" type="submit">
+                    <Button className="mx-auto button-register" variant="primary" type="submit">
                         Registrarse
                     </Button>
 
-                    <Row className="mt-4 mx-left">
-                        <div style={{ display: 'flex', alignItems: 'center' }} className="my-auto">
+                    <Row className="mt-4 mb-4 mx-left">
+                        <div className="my-auto button-login">
                             ¿Ya tienes cuenta? 
                             <Button variant="link" 
                                     style={{ maxWidth: '50%', padding: '0.2rem' }} 

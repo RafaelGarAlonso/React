@@ -1,12 +1,33 @@
+import { Container, Row, Col } from 'react-bootstrap';
+import { Card } from '../Card/Card';
+
 export const Dashboard = () => {
 
     const user = JSON.parse(sessionStorage.getItem('user'));
 
     return (
-        <>
-            <h3>Bienvenido {user}</h3>
+        <Container>
+            <Row>
+                <h3 className="mb-4">Sesión iniciada: {user}</h3>
+            </Row>
 
-            <p>Recuerda que puedes realizar tus consultas también desde la app</p>
-        </>
+            <Row>
+            <Col sm={4}>
+                <Card title = 'Ejemplo 01'
+                       quantity = '20' 
+                />
+            </Col>
+            <Col sm={4}>
+                <Card title = 'Ejemplo 01'
+                      quantity = '20' 
+                />
+            </Col>
+            <Col sm={4}>
+                <Card title = 'Ejemplo 01'
+                      quantity = '20' 
+                />
+            </Col>
+            </Row>
+        </Container>
     )
 }

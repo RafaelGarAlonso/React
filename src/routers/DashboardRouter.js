@@ -6,7 +6,7 @@ import { Container } from 'react-bootstrap';
 
 export const DashboardRouter = () => {
     return (
-        <Container fluid style={ { backgroundColor: '#e9e8e4', display: 'flex', padding: '0' } }>
+        <Container fluid style={ { position: 'absolute', height: '100%', backgroundColor: '#e9e8e4', display: 'flex', padding: '0' } }>
             <Sidebar />
             <div className="wrapper" style={ { padding: '10px', width: '100%' } }>
                 <Navbar />

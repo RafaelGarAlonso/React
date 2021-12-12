@@ -1,0 +1,25 @@
+.login-container {
+  position: absolute;
+  height: 100%;
+}
+
+.button-login {
+  min-width: 10rem;
+  min-height: 3rem;
+  justify-content: center;
+}
+
+.button-register {
+  display: flex; 
+  align-items: center;
+}
+
+.button-register button {
+  max-width: 50%;
+  padding: 0.2rem;
+}
+
+.login-form {
+  height: 100%;
+  justify-content: center;
+}

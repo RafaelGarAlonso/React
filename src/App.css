@@ -5,15 +5,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-html, body, #root, .container-fluid, form {
+html, body {
   height: 100%;
 }
 
-.login-form {
-  height: 100%;
-  justify-content: center;
+.background-access-container {
+  background: #e9e8e4;
 }

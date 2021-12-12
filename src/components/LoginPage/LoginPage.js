@@ -6,6 +6,7 @@ import { AuthContext } from '../../auth/authContext';
 import { types } from '../../types/types';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
 import { userLoginFetch } from '../../services/GlobalServices';
+import './LoginPage.css';
 
 export const LoginPage = () => {
 
@@ -52,7 +53,9 @@ export const LoginPage = () => {
     const findFormErrors = () => {
         const { email, password } = form;
         const newErrors = {};
+        const validateEmail = RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
         if ( !email || email === '' ) newErrors.email = 'Introduzca un correo electrónico';
+        if ( !validateEmail.test(email)) newErrors.email = 'Introduzca un email válido';
         if ( !password || password === '' ) newErrors.password = 'Introduzca una contraseña';
         return newErrors;
     }
@@ -70,8 +73,8 @@ export const LoginPage = () => {
     }
 
     return (
-        <Container fluid style={ { backgroundColor: '#e9e8e4' } }>
-            <Form onSubmit={ onFormSubmit }>
+        <Container fluid className="login-container background-access-container">
+            <Form className="login-form"  onSubmit={ onFormSubmit }>
                 <Stack gap={1} className="col-md-4 mx-auto login-form">
 
                     <Row className="mb-2">
@@ -106,18 +109,16 @@ export const LoginPage = () => {
                         </Form.Group>
                     </Row>
 
-                    <Button className="mx-auto" 
-                            style={{ minWidth: '10rem', minHeight: '3rem' }} 
+                    <Button className="mx-auto button-login" 
                             variant="primary" 
                             type="submit">
                         Acceder
                     </Button>
 
-                    <Row className="mt-4 mx-left">
-                        <div style={{ display: 'flex', alignItems: 'center' }} className="my-auto">
+                    <Row className="mt-4">
+                        <div className="my-auto button-register">
                             ¿No tienes cuenta? 
                             <Button variant="link" 
-                                    style={{ maxWidth: '50%', padding: '0.2rem' }} 
                                     onClick= { registerPageRedirect }> REGISTRARSE 
                             </Button>
                         </div>

@@ -1,4 +1,5 @@
 import { Modal, Button } from 'react-bootstrap';
+import './VerticalModal.css'
 
 export const VerticalModal = (props) => {
     return (
@@ -14,7 +15,7 @@ export const VerticalModal = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>
+            <p className="modal-text">
               {props.text}
             </p>
           </Modal.Body>
