@@ -4,7 +4,7 @@ import './Sidebar.css';
 
 export const Sidebar = () => {
 
-    const { submenu } = JSON.parse(sessionStorage.getItem('menu'));
+    const { submenu } = JSON.parse(localStorage.getItem('menu'));
     
     return (
         <div className="sidebar">

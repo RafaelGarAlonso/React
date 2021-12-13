@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Form, Row, Col, Button, Stack } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
-import { userRegisterFetch } from '../../services/GlobalServices';
+import { registrarMedicoFetch, registrarPacienteFetch } from '../../services/GlobalServices';
 import './RegisterPage.css';
 
 export const RegisterPage = () => {
@@ -26,11 +26,19 @@ export const RegisterPage = () => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors);
         } else {
-            userRegisterFetch(form.name, form.email, form.password, role_selector).then( (resp) => {
+            let typeOfregisterUserFetch;
+            if (role_selector === 'ADMIN') {
+                typeOfregisterUserFetch = registrarMedicoFetch;
+            } else {
+                typeOfregisterUserFetch = registrarPacienteFetch;
+            }
+
+            typeOfregisterUserFetch(form.name, form.email, form.password, role_selector).then( (resp) => {
+                const typeOfUser = role_selector === 'ADMIN' ? 'medico' : 'paciente';
                 if (resp.ok) {
                     printModal(
-                        {   title: 'Usuario registrado', 
-                            text: `El usuario ${resp.usuario.name} con email ${resp.usuario.email} se ha registrado con éxito. \n \n Por favor diríjase a la sección de acceso para acceder al sistema.`
+                        {   title: `${typeOfUser} registrado`, 
+                            text: `El ${typeOfUser} ${resp[typeOfUser].name} con email ${resp[typeOfUser].email} se ha registrado con éxito. \n \n Por favor diríjase a la sección de acceso para acceder al sistema.`
                     });
                 } else {
                     printModal({title: 'Error inesperado', text: resp.msg});

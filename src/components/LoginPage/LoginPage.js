@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../auth/authContext';
 import { types } from '../../types/types';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
-import { userLoginFetch } from '../../services/GlobalServices';
+import { accesoMedicoFetch, accesoPacienteFetch } from '../../services/GlobalServices';
 import './LoginPage.css';
 
 export const LoginPage = () => {
@@ -17,6 +17,7 @@ export const LoginPage = () => {
     const { dispatch } = useContext(AuthContext);
     const [ form, setForm ] = useState({});
     const [ errors, setErrors ] = useState({});
+    const [ role_selector, setType] = useState('ADMIN');
 
     const setField = (field, value) => {
         setForm( { ...form, [field]: value });
@@ -29,8 +30,16 @@ export const LoginPage = () => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors);
         } else {
-            userLoginFetch(form.email, form.password).then(resp => {
+            let typeOfLoginUserFetch;
+            if (role_selector === 'ADMIN') {
+                typeOfLoginUserFetch = accesoMedicoFetch;
+            } else {
+                typeOfLoginUserFetch = accesoPacienteFetch;
+            }
+
+            typeOfLoginUserFetch(form.email, form.password).then(resp => {
                 if (resp.ok) {
+
                     const action = {
                         type: types.login,
                         payload: { name: resp.name }
@@ -79,6 +88,19 @@ export const LoginPage = () => {
 
                     <Row className="mb-2">
                         <h1 className="mx-left">Acceso</h1>
+                    </Row>
+
+                    <Row className="mb-2">
+                        <Form.Label>Seleccionar Perfil</Form.Label>
+                        <Form.Group controlId="roleSelect">
+                            <Form.Control
+                                as="select"
+                                value={role_selector}
+                                onChange={e => { setType(e.target.value) }}>
+                                <option value="ADMIN">Médico</option>
+                                <option value="USER">Paciente</option>
+                            </Form.Control>
+                        </Form.Group>
                     </Row>
 
                     <Row className="mb-2">
