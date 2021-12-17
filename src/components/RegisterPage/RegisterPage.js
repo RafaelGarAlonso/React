@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Container, Form, Row, Col, Button, Stack } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
-import { registrarMedicoFetch, registrarPacienteFetch } from '../../services/GlobalServices';
+import { registerMedicFetch, registerPatientFetch } from '../../services/GlobalServices';
+import { ScreenSpinner } from '../ScreenSpinner/ScreenSpinner';
 import './RegisterPage.css';
 
 export const RegisterPage = () => {
@@ -13,6 +14,7 @@ export const RegisterPage = () => {
     const [ modalShow, setModalShow] = React.useState(false);
     const [ role_selector, setType] = useState('ADMIN');
     const [ form, setForm ] = useState({});
+    const [ showSpinner, setShowSpinner ] = React.useState(false);
     const [ errors, setErrors ] = useState({});
 
     const setField = (field, value) => {
@@ -21,26 +23,29 @@ export const RegisterPage = () => {
     }
 
     const onFormSubmit = e => {
-        e.preventDefault()
+        e.preventDefault();
         const newErrors = findFormErrors();
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors);
         } else {
+            setShowSpinner(true);
             let typeOfregisterUserFetch;
             if (role_selector === 'ADMIN') {
-                typeOfregisterUserFetch = registrarMedicoFetch;
+                typeOfregisterUserFetch = registerMedicFetch;
             } else {
-                typeOfregisterUserFetch = registrarPacienteFetch;
+                typeOfregisterUserFetch = registerPatientFetch;
             }
 
             typeOfregisterUserFetch(form.name, form.email, form.password, role_selector).then( (resp) => {
                 const typeOfUser = role_selector === 'ADMIN' ? 'medico' : 'paciente';
                 if (resp.ok) {
+                    setShowSpinner(false);
                     printModal(
                         {   title: `${typeOfUser} registrado`, 
                             text: `El ${typeOfUser} ${resp[typeOfUser].name} con email ${resp[typeOfUser].email} se ha registrado con éxito. \n \n Por favor diríjase a la sección de acceso para acceder al sistema.`
                     });
                 } else {
+                    setShowSpinner(false);
                     printModal({title: 'Error inesperado', text: resp.msg});
                 }
             });
@@ -75,8 +80,8 @@ export const RegisterPage = () => {
 
     return (
         <Container fluid className="register-container background-access-container">
-            <Form onSubmit={ onFormSubmit }>
-                <Stack gap={2} className="col-md-5 col-xl-4 mx-auto my-auto login-form">
+            <Form className="form" onSubmit={ onFormSubmit }>
+                <Stack gap={2} className="col-md-5 col-xl-4 mx-auto my-auto register-form">
 
                     <Row className="mb-2">
                         <h1 className="mx-left mt-4">Página de registro</h1>
@@ -183,6 +188,8 @@ export const RegisterPage = () => {
                 text   = { modalText }
                 onHide = { () => setModalShow(false) } 
             />
+
+            <ScreenSpinner show = {showSpinner}></ScreenSpinner>
 
         </Container>
     )

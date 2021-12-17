@@ -5,40 +5,33 @@ import { Card } from '../Card/Card';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
 import { DataTable } from '../DataTable/DataTable';
 import { ScreenSpinner } from '../ScreenSpinner/ScreenSpinner';
-import { getMedicosFetch } from '../../services/GlobalServices';
+import { getMedicsFetch, getPatientsFetch } from '../../services/GlobalServices';
 
 export const DashboardMedico = () => {
 
-    const [totalMedicos, setTotalMedicos ] = React.useState(0);
-    const [dashboardInfo, setDashboardInfo ] = React.useState({});
-    const [showSpinner, setShowSpinner ] = React.useState(false);
-    const [modalTitle, setModalTitle] = React.useState('');
-    const [modalText, setModalText] = React.useState('');
-    const [modalShow, setModalShow] = React.useState(false);
-
+    const [ totalMedics, setTotalMedicos ] = React.useState(0);
+    const [ totalPatients, setTotalPacientes ] = React.useState(0);
+    const [ showSpinner, setShowSpinner ] = React.useState(false);
+    const [ modalTitle, setModalTitle] = React.useState('');
+    const [ modalText, setModalText] = React.useState('');
+    const [ modalShow, setModalShow] = React.useState(false);
+    const dataTableHeaders = ['#', 'Nombre', 'Apellidos', 'Email'];
+    const [ dataTableRows, setDataTableRows ] = React.useState([]);
+    
     useEffect(() => {
-        setShowSpinner(true);
-        getMedicosFetch(0, 0).then(resp => {
-            if (resp.ok) {
-                setTotalMedicos(resp.total);
-                setShowSpinner(false);
-            } else {
-                printModal({title: 'Error inesperado', text: resp.msg});
-            }
-        });
-    }, [ dashboardInfo ]);
-
-    const user = JSON.parse(sessionStorage.getItem('user'));
+        getMedicos();
+    }, []);
+    
     const listCards = [
         {
             title: 'PACIENTES REGISTRADOS',
-            quantity: 20,
+            quantity: totalPatients,
             icon: 'table',
             iconColor: 'icon-blue'
         },
         {
             title: 'MÉDICOS DISPONIBLES',
-            quantity: totalMedicos,
+            quantity: totalMedics,
             icon: 'table',
             iconColor: 'icon-green'
         },
@@ -55,13 +48,39 @@ export const DashboardMedico = () => {
         setModalShow(true);
     }
 
+    const getMedicos = () => {
+        setShowSpinner(true);
+        getMedicsFetch(0, 0).then(resp => {
+            if (resp.ok) {
+                setTotalMedicos(resp.total);
+                getPacientes();
+            } else {
+                setShowSpinner(false);
+                printModal({title: 'Error inesperado', text: resp.msg});
+            }
+        });
+    }
+
+    const getPacientes = () => {
+        getPatientsFetch(0, 10).then(resp => {
+            if (resp.ok) {
+                setShowSpinner(false);
+                setDataTableRows(resp.pacientes);
+                setTotalPacientes(resp.total);
+            } else {
+                setShowSpinner(false);
+                printModal({title: 'Error inesperado', text: resp.msg});
+            }
+        });
+    }
+
+    const getRowId = (id) =>{
+        return;
+    }
+
     return (
         <>
             <Container>
-                <Row>
-                    <h3 className="mb-5">Sesión iniciada: {user}</h3>
-                </Row>
-
                 <Row>
                     { 
                         listCards.map((card, key) => {
@@ -77,12 +96,15 @@ export const DashboardMedico = () => {
                 </Row>
 
                 <Row className="mt-5">
-                    <h2>Últimos pacientes registrados</h2>
-                    <DataTable />
+                    <h2 className="mb-4">Últimos pacientes registrados</h2>
+                    <DataTable headers = { dataTableHeaders }
+                               rows = { dataTableRows }
+                               parentCallback = { getRowId }>
+                    </DataTable>
                 </Row>
             </Container>
 
-            <ScreenSpinner show = {showSpinner}></ScreenSpinner>
+            <ScreenSpinner show = { showSpinner }></ScreenSpinner>
 
             <VerticalModal 
                 show = { modalShow } 

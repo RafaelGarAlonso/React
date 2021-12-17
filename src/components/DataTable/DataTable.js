@@ -1,75 +1,39 @@
+import React from 'react';
 import { Row, Col, Table } from 'react-bootstrap';
+import './DataTable.css';
 
-export const DataTable = () => {
+export const DataTable = (props) => {
+
+    const eventClick = (e) => {
+        const rowId = e.target.parentNode.id;
+        props.parentCallback(rowId);
+    }
+
     return(
         <Row>
             <Col>
-                <Table striped bordered hover>
+                <Table className="table" striped bordered hover>     
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Teléfono</th>
+                        {
+                            props.headers.map( (head, index) => {
+                                return <th key = { index } >{head}</th>
+                            })
+                        }
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td colSpan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                        <td>5</td>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td colSpan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                        </tr><tr>
-                            <td>7</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td colSpan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                            </tr>
-                        <tr>
-                            <td>10</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
+
+                        {
+                            props.rows.map( (row, index) => {
+                                return <tr id={row.uid} onClick={eventClick} key = { index }>
+                                    <td>{ index + 1 }</td>
+                                    <td>{ row.name }</td>
+                                    <td>{ row.surname ? row.surname : 'N/A' }</td>
+                                    <td>{ row.email }</td>
+                                </tr>
+                            })
+                        }
                     </tbody>
                 </Table>
             </Col>

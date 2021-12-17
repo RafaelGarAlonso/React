@@ -8,17 +8,11 @@ export const DashboardPaciente = () => {
     const [ dashboardInfo, setDashboardInfo ] = React.useState({});
     const [ showSpinner, setShowSpinner ] = React.useState(false);
 
-    useEffect(() => {
-       console.log('LANZAR SERVICIO')
-    }, [ dashboardInfo ]);
-
-    const user = JSON.parse(sessionStorage.getItem('user'));
-
     return (
         <>
             <Container>
                 <Row>
-                    <h3 className="mb-5">Sesión iniciada: {user}</h3>
+                    <h3 className="mb-5">Sesión iniciada:</h3>
                 </Row>
 
                 <Row>

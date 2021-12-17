@@ -1,55 +1,55 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { DashboardMedico } from '../components/DashboardMedico/DashboardMedico';
 import { DashboardPaciente } from '../components/DashboardPaciente/DashboardPaciente';
+import { Profile } from '../components/Profile/Profile';
 import { Navbar } from '../components/Navbar/Navbar';
 import { Sidebar } from '../components/Sidebar/Sidebar';
+import { ListPatients } from '../components/ListPatients/ListPatients';
+import { Patient } from '../components/Patient/Patient';
 import { Container } from 'react-bootstrap';
+import { AuthContext } from '../auth/authContext';
 
 export const DashboardRouter = () => {
 
-    const [ typeOfDashboard, setTypeOfDashboard ] = React.useState('ADMIN');
-
-    useEffect(() => {
-        const { title } = JSON.parse(localStorage.getItem('menu'));
-        setTypeOfDashboard(title);
-     }, [typeOfDashboard]);
+    const { user } = useContext(AuthContext);
 
     return (
-        <Container fluid style={ { height: '100%', backgroundColor: '#e9e8e4', display: 'flex', padding: '0' } }>
+        <Container fluid style={ { height: '100%', backgroundColor: '#e9e8e4', display: 'flex', padding: '0', minHeight: '100vh' } }>
             <Sidebar />
             <div className="wrapper" style={ { padding: '10px', width: '100%' } }>
                 <Navbar />
+                    <h3 className="mb-5">Sesión iniciada: {user.name}</h3>
 
                 {
-                    typeOfDashboard === 'ADMIN' ? 
+                    user.role === 'ADMIN' ? 
                 <Routes>
-                <Route path="/dashboard" element={ <DashboardMedico /> } />
+                    <Route path="/dashboard" element={ <DashboardMedico /> } />
                 </Routes>
                 :
                 <Routes>
                     <Route path="/dashboard" element={ <DashboardPaciente /> } />
                 </Routes>
                 }
-{/* 
+
                 <Routes>
-                    <Route path="/perfil" element={ <Dashboard /> } />
+                    <Route path="/perfil" element={ <Profile /> } />
+                </Routes>
+
+               <Routes>
+                    <Route exact path="/pacientes" element={ <ListPatients /> } />
                 </Routes>
 
                 <Routes>
-                    <Route path="/pacientes*" element={ <Dashboard /> } />
+                    <Route exact path="/pacientes/:id" element={ <Patient /> } />
                 </Routes>
 
-                <Routes>
-                    <Route path="/citas*" element={ <Dashboard /> } />
-                </Routes>
-
-                <Routes>
+                {/*<Routes>
                     <Route path="/estadisticas*" element={ <Dashboard /> } />
-                </Routes> */}
+                </Routes>
 
-                {/* <Routes>
+                <Routes>
                     <Route path="/*" element={ <Dashboard /> } />
                 </Routes> */}
             </div>

@@ -1,17 +1,17 @@
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../auth/authContext';
 import './Sidebar.css';
 
-
 export const Sidebar = () => {
+    const { user } = useContext(AuthContext);
 
-    const { submenu } = JSON.parse(localStorage.getItem('menu'));
-    
     return (
         <div className="sidebar">
             <h1>Menu</h1>
             <div className="separator"></div>
             { 
-                submenu.map((elem, key) => {
+                user.menu.map((elem, key) => {
                     return <Link key={ key } to={elem.url}>{ elem.title }</Link>
                 })
             }

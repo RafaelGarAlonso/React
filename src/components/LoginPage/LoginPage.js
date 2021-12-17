@@ -5,16 +5,18 @@ import { useContext } from 'react';
 import { AuthContext } from '../../auth/authContext';
 import { types } from '../../types/types';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
-import { accesoMedicoFetch, accesoPacienteFetch } from '../../services/GlobalServices';
+import { ScreenSpinner } from '../ScreenSpinner/ScreenSpinner';
+import { accessMedicFetch, accessPatientFetch } from '../../services/GlobalServices';
 import './LoginPage.css';
 
 export const LoginPage = () => {
 
-    const [modalTitle, setModalTitle] = React.useState('');
-    const [modalText, setModalText] = React.useState('');
-    const [modalShow, setModalShow] = React.useState(false);
     const navigate = useNavigate();
+    const [ modalTitle, setModalTitle] = React.useState('');
+    const [ modalText, setModalText] = React.useState('');
+    const [ modalShow, setModalShow] = React.useState(false);
     const { dispatch } = useContext(AuthContext);
+    const [showSpinner, setShowSpinner ] = React.useState(false);
     const [ form, setForm ] = useState({});
     const [ errors, setErrors ] = useState({});
     const [ role_selector, setType] = useState('ADMIN');
@@ -30,29 +32,34 @@ export const LoginPage = () => {
         if ( Object.keys(newErrors).length > 0 ) {
             setErrors(newErrors);
         } else {
+            setShowSpinner(true);
             let typeOfLoginUserFetch;
             if (role_selector === 'ADMIN') {
-                typeOfLoginUserFetch = accesoMedicoFetch;
+                typeOfLoginUserFetch = accessMedicFetch;
             } else {
-                typeOfLoginUserFetch = accesoPacienteFetch;
+                typeOfLoginUserFetch = accessPatientFetch;
             }
 
             typeOfLoginUserFetch(form.email, form.password).then(resp => {
                 if (resp.ok) {
-
                     const action = {
                         type: types.login,
-                        payload: { name: resp.name }
+                        payload: { 
+                            name: resp.name,
+                            menu: resp.menu,
+                            role: resp.role,
+                            uid: resp.id
+                        }
                     }
                     
                     dispatch(action);
-        
                     const lastPath = localStorage.getItem('lastPath') || '/dashboard';
-        
+                    setShowSpinner(false);
                     navigate( lastPath, {
                         replace: true
                     });
                 } else {
+                    setShowSpinner(false);
                     printModal({title: 'Error inesperado', text: resp.msg});
                 }
             });
@@ -83,7 +90,7 @@ export const LoginPage = () => {
 
     return (
         <Container fluid className="login-container background-access-container">
-            <Form className="login-form"  onSubmit={ onFormSubmit }>
+            <Form className="form"  onSubmit={ onFormSubmit }>
                 <Stack gap={1} className="col-md-4 mx-auto login-form">
 
                     <Row className="mb-2">
@@ -155,6 +162,8 @@ export const LoginPage = () => {
                 text = { modalText }
                 onHide = { () => setModalShow(false) } 
             />
+
+            <ScreenSpinner show = {showSpinner}></ScreenSpinner>
 
         </Container>
     )
