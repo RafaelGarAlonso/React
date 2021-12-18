@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button } from 'react-bootstrap';
 import { VerticalModal } from '../VerticalModal/VerticalModal';
 import { ScreenSpinner } from '../ScreenSpinner/ScreenSpinner';
 import { AuthContext } from '../../auth/authContext';
 import { types } from '../../types/types';
-import { getMedicsFetch, updateMedic, getPatientsFetch, updatePatient } from '../../services/GlobalServices';
+import { getMedicsFetch, updateMedic, getPatientsFetch, updatePatient, deleteMedic, deletePatient } from '../../services/GlobalServices';
 import './Profile.css';
 export const Profile = () => {
 
@@ -18,12 +19,13 @@ export const Profile = () => {
     const [ gender_selector, setGenderValue] = useState('MALE');
     const { user } = useContext(AuthContext);
     const { dispatch } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (user.role === 'ADMIN') {
-            getMedicos();
+            getMedics();
         } else {
-            getPacientes();
+            getPatients();
         }
     }, []);
 
@@ -58,14 +60,15 @@ export const Profile = () => {
                             payload: user
                         }
 
-                        action.payload.name = resp.medico.name;
+                        action.payload.name = resp.medic.name;
+                        action.payload.email = resp.medic.email;
                         
                         dispatch(action);
                         setShowSpinner(false);
-                        printModal({title: 'Perfil actualizado', text: 'Su perfil ha sido actualizado correctamente'});
+                        printModal( { title: 'Perfil actualizado', text: 'Su perfil ha sido actualizado correctamente' } );
                     } else {
                         setShowSpinner(false);
-                        printModal({title: 'Error inesperado', text: resp.msg});
+                        printModal( { title: 'Error inesperado', text: resp.msg } );
                     }
                 });
             } else {
@@ -80,7 +83,7 @@ export const Profile = () => {
                     uid: user.uid, 
                     medicAssigned: user.medicAssigned, 
                     appointment: user.appointment 
-                }).then(resp => {
+                }).then((resp) => {
 
                     if (resp.ok) {
                         const action = {
@@ -88,14 +91,17 @@ export const Profile = () => {
                             payload: user
                         }
 
-                        action.payload.name = resp.paciente.name;
+                        action.payload.name = resp.patient.name;
+                        action.payload.email = resp.patient.email;
                         
                         dispatch(action);
+
                         setShowSpinner(false);
-                        printModal({title: 'Perfil actualizado', text: 'Su perfil ha sido actualizado correctamente'});
+
+                        printModal( {title: 'Perfil actualizado', text: 'Su perfil ha sido actualizado correctamente'} );
                     } else {
                         setShowSpinner(false);
-                        printModal({title: 'Error inesperado', text: resp.msg});
+                        printModal( {title: 'Error inesperado', text: resp.msg} );
                     }
                 });
             }     
@@ -118,11 +124,11 @@ export const Profile = () => {
         setModalShow(true);
     }
 
-    const getMedicos = () => {
+    const getMedics = () => {
         setShowSpinner(true);
         getMedicsFetch(0, 0).then(resp => {
             if (resp.ok) {
-                const medics = resp.medicos;
+                const medics = resp.medics;
                 const dataProfile = medics.find((profile => profile.uid === user.uid));
                 if (dataProfile) {
                     form.name = dataProfile.name;
@@ -142,11 +148,11 @@ export const Profile = () => {
         });
     }
 
-    const getPacientes = () => {
+    const getPatients = () => {
         setShowSpinner(true);
         getPatientsFetch(0, 0).then(resp => {
             if (resp.ok) {
-                const patients = resp.pacientes;
+                const patients = resp.patients;
                 const dataProfile = patients.find((profile => profile.uid === user.uid));
                 if (dataProfile) {
                     form.name = dataProfile.name;
@@ -166,12 +172,60 @@ export const Profile = () => {
         });
     }
 
+    const deleteProfile = () => {
+        if (window.confirm("¿Seguro que quieres eliminar tu cuenta?") === true) {
+            if (user.role === 'ADMIN') {
+                deleteMedic(user.uid).then(resp => {
+                    if (resp.ok) {
+                        disconnectSession();
+                    } else {
+                        setShowSpinner(false);
+                        printModal({title: 'Error inesperado', text: resp.msg});
+                    }
+                });
+            } else {
+                deletePatient(user.uid).then(resp => {
+                    if (resp.ok) {
+                        disconnectSession();
+                    } else {
+                        setShowSpinner(false);
+                        printModal({title: 'Error inesperado', text: resp.msg});
+                    }
+                });
+            }
+        } else {
+            return;
+        }
+    }
+
+    const disconnectSession = () => {
+        const action = { type: types.logout }
+        dispatch(action);
+
+        setTimeout(() => {
+            sessionStorage.clear();
+            navigate( '/login', {
+                replace: true
+            });
+        });
+    }
+
     return (
         <Container fluid className="col-md-8 mt-5">
 
             <Form className="form-profile" onSubmit={ onFormSubmitUpdateProfile }>
                 <Row className="mb-4">
-                    <h1>Perfil de {user.name}</h1>
+                    <Col>
+                        <h1>Perfil de {user.name}</h1>
+                    </Col>
+                    <Col className="mx-right">
+                        <Button className="delete-profile-button" 
+                                variant="danger" 
+                                type="button"
+                                onClick= { deleteProfile } >
+                            Eliminar cuenta
+                        </Button>
+                    </Col>
                 </Row>
                 <Row className="mb-4">
                     <Col className="mb-2" md={12} lg={6}>

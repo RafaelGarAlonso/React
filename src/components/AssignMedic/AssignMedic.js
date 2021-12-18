@@ -11,16 +11,16 @@ import { updatePatient } from '../../services/GlobalServices';
 export const AssignMedic = () => {
 
   const { user } = useContext(AuthContext);
-  const [ showSpinner, setShowSpinner ] = React.useState(false);
-  const [ modalTitle, setModalTitle] = React.useState('');
-  const [ modalText, setModalText] = React.useState('');
-  const [ modalShow, setModalShow] = React.useState(false);
-  const [ listMedics, setListMedics] = React.useState([]);
+  const [ showSpinner, setShowSpinner ] = useState(false);
+  const [ modalTitle, setModalTitle] = useState('');
+  const [ modalText, setModalText] = useState('');
+  const [ modalShow, setModalShow] = useState(false);
+  const [ listMedics, setListMedics] = useState([]);
   const [ medics_selector, setMedicSelector] = useState('');
   const { dispatch } = useContext(AuthContext);
 
   useEffect(() => {
-    getMedicos();
+    getMedics();
 }, []);
 
   const printModal = ({title, text}) => {
@@ -29,16 +29,15 @@ export const AssignMedic = () => {
     setModalShow(true);
   }
 
-  const getMedicos = () => {
+  const getMedics = () => {
     setShowSpinner(true);
-    console.log('user', user)
     getMedicsFetch(0, 0).then(resp => {
         if (resp.ok) {
-          setListMedics(resp.medicos);
+          setListMedics(resp.medics);
 
           setTimeout(() => {
             let hasMedicAssigned = null;
-            hasMedicAssigned = resp.medicos.find((medic) => medic.uid === user.medicAssigned);
+            hasMedicAssigned = resp.medics.find((medic) => medic.uid === user.medicAssigned);
             if (hasMedicAssigned) {
               document.querySelector('#medicSelect').value = hasMedicAssigned.uid;
             }
@@ -86,7 +85,7 @@ export const AssignMedic = () => {
           setShowSpinner(false);
           printModal({title: 'Error inesperado', text: resp.msg});
       }
-  });
+    });
   }
 
   return(
@@ -110,7 +109,7 @@ export const AssignMedic = () => {
                                     }
                       </Form.Control>
                   </Form.Group>
-                  <Button style = { { maxWidth: '200px', marginLeft: '1rem' } } className="mx-left mt-4" variant="primary" type="submit">
+                  <Button style = { { maxWidth: '12.5rem', marginLeft: '1rem' } } className="mx-left mt-4" variant="primary" type="submit">
                         Asignar
                     </Button>
               </Row>

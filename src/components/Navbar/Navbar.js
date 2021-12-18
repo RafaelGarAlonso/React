@@ -22,7 +22,7 @@ export const Navbar = () => {
 
     const handleLogout = () => {
         dispatch({ type: types.logout });
-        localStorage.clear();
+        sessionStorage.clear();
         navigate('/login', {
             replace: true
         });

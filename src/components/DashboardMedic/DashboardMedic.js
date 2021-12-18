@@ -7,10 +7,11 @@ import { DataTable } from '../DataTable/DataTable';
 import { ScreenSpinner } from '../ScreenSpinner/ScreenSpinner';
 import { getMedicsFetch, getPatientsFetch } from '../../services/GlobalServices';
 
-export const DashboardMedico = () => {
+export const DashboardMedic = () => {
 
-    const [ totalMedics, setTotalMedicos ] = React.useState(0);
-    const [ totalPatients, setTotalPacientes ] = React.useState(0);
+    const [ totalMedics, setTotalMedics ] = React.useState(0);
+    const [ totalPatients, setTotalPatients ] = React.useState(0);
+    const [ totalAppointments, setTotalAppointments ] = React.useState(0);
     const [ showSpinner, setShowSpinner ] = React.useState(false);
     const [ modalTitle, setModalTitle] = React.useState('');
     const [ modalText, setModalText] = React.useState('');
@@ -19,7 +20,7 @@ export const DashboardMedico = () => {
     const [ dataTableRows, setDataTableRows ] = React.useState([]);
     
     useEffect(() => {
-        getMedicos();
+        getMedics();
     }, []);
     
     const listCards = [
@@ -37,17 +38,17 @@ export const DashboardMedico = () => {
         },
         {
             title: 'CITAS GENERADAS',
-            quantity: 20,
+            quantity: totalAppointments,
             icon: 'table'
         }
     ]
 
-    const getMedicos = () => {
+    const getMedics = () => {
         setShowSpinner(true);
         getMedicsFetch(0, 0).then(resp => {
             if (resp.ok) {
-                setTotalMedicos(resp.total);
-                getPacientes();
+                setTotalMedics(resp.total);
+                getPatients();
             } else {
                 setShowSpinner(false);
                 printModal({title: 'Error inesperado', text: resp.msg});
@@ -55,12 +56,19 @@ export const DashboardMedico = () => {
         });
     }
     
-    const getPacientes = () => {
-        getPatientsFetch(0, 10).then(resp => {
+    const getPatients = () => {
+        getPatientsFetch(0, 0).then(resp => {
             if (resp.ok) {
+                setDataTableRows(resp.patients);
+                setTotalPatients(resp.total);
+                let totalCount = 0;
+                resp.patients.forEach((patient) => {
+                    if (patient.medicAssigned) {
+                        totalCount++;
+                    }
+                });
+                setTotalAppointments(totalCount);
                 setShowSpinner(false);
-                setDataTableRows(resp.pacientes);
-                setTotalPacientes(resp.total);
             } else {
                 setShowSpinner(false);
                 printModal({title: 'Error inesperado', text: resp.msg});
@@ -96,7 +104,7 @@ export const DashboardMedico = () => {
                 </Row>
 
                 <Row className="mt-5">
-                    <h2 className="mb-4">Últimos pacientes registrados</h2>
+                    <h2 className="mb-4">Pacientes registrados</h2>
                     <DataTable headers = { dataTableHeaders }
                                rows = { dataTableRows }
                                parentCallback = { getRowId }>

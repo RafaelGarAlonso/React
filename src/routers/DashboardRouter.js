@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { DashboardMedico } from '../components/DashboardMedico/DashboardMedico';
-import { DashboardPaciente } from '../components/DashboardPaciente/DashboardPaciente';
+import { DashboardMedic } from '../components/DashboardMedic/DashboardMedic';
+import { DashboardPatient } from '../components/DashboardPatient/DashboardPatient';
 import { Profile } from '../components/Profile/Profile';
 import { Navbar } from '../components/Navbar/Navbar';
 import { Sidebar } from '../components/Sidebar/Sidebar';
@@ -26,20 +26,20 @@ export const DashboardRouter = () => {
                 {
                     user.role === 'ADMIN' ? 
                     <Routes>
-                        <Route exact path="/dashboard" element={ <DashboardMedico /> } />
+                        <Route exact path="/dashboard" element={ <DashboardMedic /> } />
                         <Route exact path="/perfil" element={ <Profile /> } />
                         <Route exact path="/pacientes" element={ <ListPatients /> } />
                         <Route exact path="/pacientes/:id" element={ <Patient /> } />
                         <Route exact path="/consultar-citas" element={ <ConsultListAppointment /> } />
-                        <Route exact path="/*" element={ <DashboardMedico /> } />
+                        <Route exact path="/*" element={ <DashboardMedic /> } />
                     </Routes>
                     :
                     <Routes>
-                        <Route exact path="/dashboard" element={ <DashboardPaciente /> } />
+                        <Route exact path="/dashboard" element={ <DashboardPatient /> } />
                         <Route exact path="/asignar-medico" element={ <AssignMedic /> } />
                         <Route exact path="/perfil" element={ <Profile /> } />
                         <Route exact path="/solicitar-cita" element={ <PatientAppointment /> } />
-                        <Route exact path="/*" element={ <DashboardPaciente /> } />
+                        <Route exact path="/*" element={ <DashboardPatient /> } />
                     </Routes>
                 }
             </div>

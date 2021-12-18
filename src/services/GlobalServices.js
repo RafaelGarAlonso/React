@@ -1,5 +1,5 @@
 const registerMedicFetch = (name, email, password, role) => {
-    return fetch('http://localhost:3000/api/medicos/', { 
+    return fetch('http://localhost:3000/api/medics', { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -8,14 +8,18 @@ const registerMedicFetch = (name, email, password, role) => {
         body: JSON.stringify({ name, email, password, role })
     })
     .then( response => {
-        return response.json().then((data) => {
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 const registerPatientFetch = (name, email, password, role) => {
-    return fetch('http://localhost:3000/api/pacientes', { 
+    return fetch('http://localhost:3000/api/patients', { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -24,14 +28,18 @@ const registerPatientFetch = (name, email, password, role) => {
         body: JSON.stringify({ name, email, password, role })
     })
     .then( response => {
-        return response.json().then((data) => {
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 const accessMedicFetch = (email, password) => {
-    return fetch('http://localhost:3000/api/login/medico', { 
+    return fetch('http://localhost:3000/api/login/medic', { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -39,15 +47,19 @@ const accessMedicFetch = (email, password) => {
         },
         body: JSON.stringify({ email, password })})
     .then( response => {
-        return response.json().then((data) => {
-            localStorage.setItem('token', JSON.stringify(data.token));
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                sessionStorage.setItem('token', JSON.stringify(data.token));
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 const accessPatientFetch = (email, password) => {
-    return fetch('http://localhost:3000/api/login/paciente', {
+    return fetch('http://localhost:3000/api/login/patient', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -55,15 +67,19 @@ const accessPatientFetch = (email, password) => {
         },
         body: JSON.stringify({ email, password })})
     .then( response => {
-        return response.json().then((data) => {
-            localStorage.setItem('token', JSON.stringify(data.token));
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                sessionStorage.setItem('token', JSON.stringify(data.token));
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 const getMedicsFetch = (from, limit) => {
-    return fetch(`http://localhost:3000/api/medicos?from=${from}&limit=${limit}`, {
+    return fetch(`http://localhost:3000/api/medics?from=${from}&limit=${limit}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -71,14 +87,18 @@ const getMedicsFetch = (from, limit) => {
             'x-token': getToken()
         }})
     .then( response => {
-        return response.json().then((data) => {
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 const getPatientsFetch = (from, limit) => {
-    return fetch(`http://localhost:3000/api/pacientes?from=${from}&limit=${limit}`, {
+    return fetch(`http://localhost:3000/api/patients?from=${from}&limit=${limit}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -86,14 +106,18 @@ const getPatientsFetch = (from, limit) => {
             'x-token': getToken()
         }})
     .then( response => {
-        return response.json().then((data) => {
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 const updateMedic = ({name, email, address, province, surname, gender, uid}) => {
-    return fetch(`http://localhost:3000/api/medicos/${uid}`, { 
+    return fetch(`http://localhost:3000/api/medics/${uid}`, { 
         method: 'PUT',
         body: JSON.stringify({ name, email, address, province, surname, gender }),
         headers: {
@@ -102,14 +126,18 @@ const updateMedic = ({name, email, address, province, surname, gender, uid}) => 
             'x-token': getToken()
         }})
     .then( response => {
-        return response.json().then((data) => {
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 const updatePatient = ({name, email, address, province, surname, gender, uid, medicAssigned, appointment}) => {
-    return fetch(`http://localhost:3000/api/pacientes/${uid}`, { 
+    return fetch(`http://localhost:3000/api/patients/${uid}`, { 
         method: 'PUT',
         body: JSON.stringify({ name, email, address, province, surname, gender, medicAssigned, appointment }),
         headers: {
@@ -118,14 +146,56 @@ const updatePatient = ({name, email, address, province, surname, gender, uid, me
             'x-token': getToken()
         }})
     .then( response => {
-        return response.json().then((data) => {
-            return data;
-        });
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
+    });
+}
+
+const deleteMedic = (uid) => {
+    return fetch(`http://localhost:3000/api/medics/${uid}`, { 
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'x-token': getToken()
+        }})
+    .then( response => {
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
+    });
+}
+
+const deletePatient = (uid) => {
+    return fetch(`http://localhost:3000/api/patients/${uid}`, { 
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'x-token': getToken()
+        }})
+    .then( response => {
+        if (response.ok) {
+            return response.json().then((data) => {
+                return data;
+            });
+        } else {
+            return response.json();
+        }
     });
 }
 
 function getToken() {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
 }
 
 export {   
@@ -136,5 +206,7 @@ export {
     getMedicsFetch,
     getPatientsFetch,
     updateMedic,
-    updatePatient
+    updatePatient,
+    deleteMedic,
+    deletePatient
 };

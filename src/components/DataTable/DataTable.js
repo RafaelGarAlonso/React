@@ -23,7 +23,6 @@ export const DataTable = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-
                         {
                             props.rows.length ? props.rows.map( (row, index) => {
                                 return <tr id={row.uid} onClick={eventClick} key = { index }>

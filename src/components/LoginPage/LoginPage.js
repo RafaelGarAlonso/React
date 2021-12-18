@@ -48,7 +48,9 @@ export const LoginPage = () => {
                     }
                     
                     dispatch(action);
-                    const lastPath = localStorage.getItem('lastPath') || '/dashboard';
+
+                    const lastPath = sessionStorage.getItem('lastPath') || '/dashboard';
+
                     setShowSpinner(false);
                     navigate( lastPath, {
                         replace: true

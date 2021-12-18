@@ -16,14 +16,14 @@ export const ListPatients = () => {
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        getMedicos();
+        getPatients();
     }, []);
 
-    const getMedicos = () => {
+    const getPatients = () => {
         setShowSpinner(true);
         getPatientsFetch(0, 0).then(resp => {
             if (resp.ok) {
-                const listPatientsAssigned = resp.pacientes.filter((patient) => patient.medicAssigned === user.uid);
+                const listPatientsAssigned = resp.patients.filter((patient) => patient.medicAssigned === user.uid);
                 setDataTableRows(listPatientsAssigned);
                 setShowSpinner(false);
             } else {

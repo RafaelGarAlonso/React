@@ -13,14 +13,14 @@ export const Patient = () => {
 
     useEffect(() => {
         idParam = window.location.pathname.split('/')[2];
-        getMedicos();
+        getMedics();
     }, []);
 
-    const getMedicos = () => {
+    const getMedics = () => {
         setShowSpinner(true);
         getPatientsFetch(0, 0).then(resp => {
             if (resp.ok) {
-                const patients = resp.pacientes;
+                const patients = resp.patients;
                 setDataPatient(patients.find((patient => patient.uid === idParam)));
                 setShowSpinner(false);
             } else {

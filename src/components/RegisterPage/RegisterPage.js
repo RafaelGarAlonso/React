@@ -37,12 +37,12 @@ export const RegisterPage = () => {
             }
 
             typeOfregisterUserFetch(form.name, form.email, form.password, role_selector).then( (resp) => {
-                const typeOfUser = role_selector === 'ADMIN' ? 'medico' : 'paciente';
+                const typeOfUser = role_selector === 'ADMIN' ? 'medic' : 'patient';
                 if (resp.ok) {
                     setShowSpinner(false);
                     printModal(
-                        {   title: `${typeOfUser} registrado`, 
-                            text: `El ${typeOfUser} ${resp[typeOfUser].name} con email ${resp[typeOfUser].email} se ha registrado con éxito. \n \n Por favor diríjase a la sección de acceso para acceder al sistema.`
+                        {   title: `${typeOfUser === 'medic' ? 'Médico' : 'Paciente' } registrado`, 
+                            text: `El ${typeOfUser === 'medic' ? 'médico' : 'paciente' } ${resp[typeOfUser].name} con email ${resp[typeOfUser].email} se ha registrado con éxito. \n \n Por favor diríjase a la sección de acceso para acceder al sistema.`
                     });
                 } else {
                     setShowSpinner(false);
