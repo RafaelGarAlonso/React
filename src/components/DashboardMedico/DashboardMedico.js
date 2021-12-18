@@ -42,12 +42,6 @@ export const DashboardMedico = () => {
         }
     ]
 
-    const printModal = ({title, text}) => {
-        setModalTitle(title);
-        setModalText(text);
-        setModalShow(true);
-    }
-
     const getMedicos = () => {
         setShowSpinner(true);
         getMedicsFetch(0, 0).then(resp => {
@@ -60,7 +54,7 @@ export const DashboardMedico = () => {
             }
         });
     }
-
+    
     const getPacientes = () => {
         getPatientsFetch(0, 10).then(resp => {
             if (resp.ok) {
@@ -72,6 +66,12 @@ export const DashboardMedico = () => {
                 printModal({title: 'Error inesperado', text: resp.msg});
             }
         });
+    }
+
+    const printModal = ({title, text}) => {
+        setModalTitle(title);
+        setModalText(text);
+        setModalShow(true);
     }
 
     const getRowId = (id) =>{

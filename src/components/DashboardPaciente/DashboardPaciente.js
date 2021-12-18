@@ -1,26 +1,19 @@
-import React from 'react';
-import { useEffect } from 'react';
-import { Container, Row } from 'react-bootstrap';
-import { ScreenSpinner } from '../ScreenSpinner/ScreenSpinner';
+import React, { useContext } from 'react';
+import { Container, Row, Image } from 'react-bootstrap';
+import { AuthContext } from '../../auth/authContext';
 
 export const DashboardPaciente = () => {
 
-    const [ dashboardInfo, setDashboardInfo ] = React.useState({});
-    const [ showSpinner, setShowSpinner ] = React.useState(false);
+    const { user } = useContext(AuthContext);
 
     return (
-        <>
-            <Container>
-                <Row>
-                    <h3 className="mb-5">Sesión iniciada:</h3>
-                </Row>
-
-                <Row>
-                    <h1>PANEL PACIENTE</h1>
-                </Row>
-            </Container>
-
-            <ScreenSpinner show = {showSpinner}></ScreenSpinner>
-        </>
+        <Container>
+            <Row>
+                <Image style= { { maxWidth: '120px', margin: '1rem' } } src="assets/dashboard.png" />
+                <h3 className="mb-4">Gestión del paciente</h3>
+                <p>Bienvenido al sistema de gestión de pacientes {user.name}.</p>
+                <p>A continuación podrás actualizar tu perfil, asignar un médico y/o generar tus consultas.</p>
+            </Row>
+        </Container>
     )
 }

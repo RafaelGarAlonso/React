@@ -44,12 +44,7 @@ export const LoginPage = () => {
                 if (resp.ok) {
                     const action = {
                         type: types.login,
-                        payload: { 
-                            name: resp.name,
-                            menu: resp.menu,
-                            role: resp.role,
-                            uid: resp.id
-                        }
+                        payload: resp
                     }
                     
                     dispatch(action);

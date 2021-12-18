@@ -92,10 +92,10 @@ const getPatientsFetch = (from, limit) => {
     });
 }
 
-const updateMedic = (name, email, address, province, surname, gender_selector, uid) => {
+const updateMedic = ({name, email, address, province, surname, gender, uid}) => {
     return fetch(`http://localhost:3000/api/medicos/${uid}`, { 
         method: 'PUT',
-        body: JSON.stringify({ name, email, address, province, surname, gender: gender_selector }),
+        body: JSON.stringify({ name, email, address, province, surname, gender }),
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -108,10 +108,10 @@ const updateMedic = (name, email, address, province, surname, gender_selector, u
     });
 }
 
-const updatePatient = (name, email, address, province, surname, gender_selector, uid) => {
+const updatePatient = ({name, email, address, province, surname, gender, uid, medicAssigned, appointment}) => {
     return fetch(`http://localhost:3000/api/pacientes/${uid}`, { 
         method: 'PUT',
-        body: JSON.stringify({ name, email, address, province, surname, gender: gender_selector }),
+        body: JSON.stringify({ name, email, address, province, surname, gender, medicAssigned, appointment }),
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

@@ -40,7 +40,7 @@ export const Navbar = () => {
                 <ul className="navbar-nav ml-auto">
                     <span className="nav-item nav-link text-info">
                         <div className="user">
-                        <Link to={'perfil'}><PersonCircle />{user.name}</Link>
+                        <Link to={'perfil'}><PersonCircle />{user.email}</Link>
                         </div>
                     </span>
                     <button className="nav-item nav-link btn" onClick = { handleLogout }>

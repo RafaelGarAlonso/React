@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { DashboardMedico } from '../components/DashboardMedico/DashboardMedico';
 import { DashboardPaciente } from '../components/DashboardPaciente/DashboardPaciente';
@@ -8,6 +7,9 @@ import { Navbar } from '../components/Navbar/Navbar';
 import { Sidebar } from '../components/Sidebar/Sidebar';
 import { ListPatients } from '../components/ListPatients/ListPatients';
 import { Patient } from '../components/Patient/Patient';
+import { AssignMedic } from '../components/AssignMedic/AssignMedic';
+import { PatientAppointment } from '../components/PatientAppointment/PatientAppointment';
+import { ConsultListAppointment } from '../components/ConsultListAppointment/ConsultListAppointment';
 import { Container } from 'react-bootstrap';
 import { AuthContext } from '../auth/authContext';
 
@@ -20,38 +22,26 @@ export const DashboardRouter = () => {
             <Sidebar />
             <div className="wrapper" style={ { padding: '10px', width: '100%' } }>
                 <Navbar />
-                    <h3 className="mb-5">Sesión iniciada: {user.name}</h3>
-
+                <h3 className="mb-5">Sesión iniciada: {user.name}</h3>
                 {
                     user.role === 'ADMIN' ? 
-                <Routes>
-                    <Route path="/dashboard" element={ <DashboardMedico /> } />
-                </Routes>
-                :
-                <Routes>
-                    <Route path="/dashboard" element={ <DashboardPaciente /> } />
-                </Routes>
+                    <Routes>
+                        <Route exact path="/dashboard" element={ <DashboardMedico /> } />
+                        <Route exact path="/perfil" element={ <Profile /> } />
+                        <Route exact path="/pacientes" element={ <ListPatients /> } />
+                        <Route exact path="/pacientes/:id" element={ <Patient /> } />
+                        <Route exact path="/consultar-citas" element={ <ConsultListAppointment /> } />
+                        <Route exact path="/*" element={ <DashboardMedico /> } />
+                    </Routes>
+                    :
+                    <Routes>
+                        <Route exact path="/dashboard" element={ <DashboardPaciente /> } />
+                        <Route exact path="/asignar-medico" element={ <AssignMedic /> } />
+                        <Route exact path="/perfil" element={ <Profile /> } />
+                        <Route exact path="/solicitar-cita" element={ <PatientAppointment /> } />
+                        <Route exact path="/*" element={ <DashboardPaciente /> } />
+                    </Routes>
                 }
-
-                <Routes>
-                    <Route path="/perfil" element={ <Profile /> } />
-                </Routes>
-
-               <Routes>
-                    <Route exact path="/pacientes" element={ <ListPatients /> } />
-                </Routes>
-
-                <Routes>
-                    <Route exact path="/pacientes/:id" element={ <Patient /> } />
-                </Routes>
-
-                {/*<Routes>
-                    <Route path="/estadisticas*" element={ <Dashboard /> } />
-                </Routes>
-
-                <Routes>
-                    <Route path="/*" element={ <Dashboard /> } />
-                </Routes> */}
             </div>
         </Container>
     )

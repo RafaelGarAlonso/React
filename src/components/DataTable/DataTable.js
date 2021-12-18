@@ -25,7 +25,7 @@ export const DataTable = (props) => {
                     <tbody>
 
                         {
-                            props.rows.map( (row, index) => {
+                            props.rows.length ? props.rows.map( (row, index) => {
                                 return <tr id={row.uid} onClick={eventClick} key = { index }>
                                     <td>{ index + 1 }</td>
                                     <td>{ row.name }</td>
@@ -33,6 +33,10 @@ export const DataTable = (props) => {
                                     <td>{ row.email }</td>
                                 </tr>
                             })
+                            : 
+                            <tr>
+                                <td>LISTA VACÍA</td>
+                            </tr>
                         }
                     </tbody>
                 </Table>

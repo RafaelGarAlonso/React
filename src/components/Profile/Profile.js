@@ -41,7 +41,17 @@ export const Profile = () => {
             setShowSpinner(true);
 
             if (user.role === 'ADMIN') {
-                updateMedic(form.name, form.email, form.address, form.province, form.surname, gender_selector, user.uid).then(resp => {
+
+                updateMedic({
+                    name: form.name, 
+                    email: form.email, 
+                    address: form.address, 
+                    province: form.province, 
+                    surname: form.surname, 
+                    gender: gender_selector, 
+                    uid: user.uid
+                }).then(resp => {
+
                     if (resp.ok) {    
                         const action = {
                             type: types.login,
@@ -59,7 +69,19 @@ export const Profile = () => {
                     }
                 });
             } else {
-                updatePatient(form.name, form.email, form.address, form.province, form.surname, gender_selector, user.uid).then(resp => {
+
+                updatePatient({
+                    name: form.name, 
+                    email: form.email, 
+                    address: form.address, 
+                    province: form.province, 
+                    surname: form.surname, 
+                    gender: gender_selector, 
+                    uid: user.uid, 
+                    medicAssigned: user.medicAssigned, 
+                    appointment: user.appointment 
+                }).then(resp => {
+
                     if (resp.ok) {
                         const action = {
                             type: types.login,

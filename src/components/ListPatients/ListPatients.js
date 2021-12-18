@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useEffect } from 'react';
 import { DataTable } from '../DataTable/DataTable';
 import { ScreenSpinner } from '../ScreenSpinner/ScreenSpinner';
 import { Container, Row } from 'react-bootstrap';
 import { getPatientsFetch } from '../../services/GlobalServices';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../auth/authContext';
 
 export const ListPatients = () => {
 
@@ -12,6 +13,7 @@ export const ListPatients = () => {
     const [ showSpinner, setShowSpinner ] = React.useState(false);
     const dataTableHeaders = ['#', 'Nombre', 'Apellidos', 'Email'];
     const [ dataTableRows, setDataTableRows ] = React.useState([]);
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         getMedicos();
@@ -21,7 +23,8 @@ export const ListPatients = () => {
         setShowSpinner(true);
         getPatientsFetch(0, 0).then(resp => {
             if (resp.ok) {
-                setDataTableRows(resp.pacientes);
+                const listPatientsAssigned = resp.pacientes.filter((patient) => patient.medicAssigned === user.uid);
+                setDataTableRows(listPatientsAssigned);
                 setShowSpinner(false);
             } else {
                 setShowSpinner(false);
